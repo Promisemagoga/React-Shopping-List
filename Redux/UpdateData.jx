@@ -1,0 +1,24 @@
+   fetchDataStart(state){
+            state.loading = true
+            state.error = null;
+        },
+        fetchDataSuccess(state, action){
+            state.loading = false
+            // state.items = action.payload
+            try {
+                const querrySnapShot = getDocs(collection(db, "myItems"))
+                const data = querrySnapShot.docs.map((doc) =>({
+                    id: doc.id,
+                    ...doc.data()
+                }),action.payload)
+                // dispatch(fetchDataSuccess(data))
+               console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        fetchDataFailure(state, action){
+            state.loading = false
+            state.error = action.payload
+        }
+    }
