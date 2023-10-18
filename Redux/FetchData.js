@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../Config/Firebase";
+import { Alert } from "react-native";
 
 
 const initialState = {
@@ -27,8 +28,20 @@ export const fetchDataSlice = createSlice({
     },
     deleteData: (state, action) => {
       const index = state.myItems.findIndex((item) => item.id === action.payload)
-      if(index !== -1){
-        state.myItems.splice(index,1)
+      if (index !== -1) {
+        state.myItems.splice(index, 1)
+      }
+    },
+    updateData: (state, action) => {
+      try {
+        const index = state.myItems.findIndex((item) => item.id === action.payload.id);
+        if (index !== -1) {
+          state.myItems[index] = action.payload;
+        }
+        console.log("Item updated successfully1");
+
+      } catch (error) {
+        console.log(error);
       }
     }
   },
@@ -50,20 +63,38 @@ export const fetchData = () => async (dispatch) => {
   }
 };
 
-export const deleteItem = (id) => async(dispatch) =>{
+export const deleteItem = (id) => async (dispatch) => {
+  console.log(id);
   try {
-    await deleteDoc(doc(db, "myItems",id ))  ;
+    await deleteDoc(doc(db, "myItems", id));
     dispatch(fetchDataSlice.actions.deleteData(id))
-    alert("Item deleted successfully")
+    Alert.alert("Item deleted successfully")
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
 }
+
+export const updateAnItem = (updatedItem) => async (dispatch) => {
+  console.log("check updatedItem:",updatedItem);
+
+  const item = {
+    item: updatedItem.item,
+    quantity: updatedItem.quantity
+  }
+  try {
+    await updateDoc(doc(db, "myItems", updatedItem.docId), item);
+    dispatch(fetchDataSlice.actions.updateData(updatedItem));
+    console.log("Item updated successfully2");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const {
   fetchDataStart,
   fetchDataFailure,
   fetchDataSuccess,
-  deleteData
+  deleteData,
+  updateData
 } = fetchDataSlice.actions;
 export default fetchDataSlice.reducer;

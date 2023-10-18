@@ -1,24 +1,27 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SafeAreaView } from 'react-native';
-import { deleteData, fetchData } from '../Redux/FetchData';
+import { deleteData, deleteItem, fetchData, updateData } from '../Redux/FetchData';
 import BottomNav from './BottomNav';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import EditModal from './EditModal';
 
 
 export default function DisplayList() {
     const dispatch = useDispatch()
+    const [openModal, setOpenModal] = useState(false)
+    const [updateItem, setUpdateItem] = useState("")
     const { loading, error, myItems } = useSelector((state) => state.myItems)
     console.log("what's inside:", useSelector((state) => state.myItems));
-
+   
 
     useEffect(() => {
         dispatch(fetchData())
     }, [])
 
     const handleDelete = (itemId) => {
-        dispatch(deleteData(itemId))
+        dispatch(deleteItem(itemId))
     }
 
 
@@ -39,6 +42,12 @@ export default function DisplayList() {
         );
     }
 
+    function modal(itemDetails){
+        console.log("see the item DETAILS:", itemDetails);
+        setUpdateItem(itemDetails)
+        setOpenModal(true)
+    }
+
 
 
     return (
@@ -55,13 +64,13 @@ export default function DisplayList() {
                             <Text style={{ fontSize: 16, fontWeight: "300" }}>{data.item}</Text>
                             <Text style={{ fontSize: 16, fontWeight: "300" }}>{data.quantity}</Text>
                             <View style={styles.crud}>
-                            <MaterialCommunityIcons name='pencil' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() => navigation.navigate("AddForm")} />
-                                <MaterialCommunityIcons name='close' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() =>handleDelete(data.id)} />
-                               
+                                <MaterialCommunityIcons name='pencil' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() => modal( data)} />
+                                <MaterialCommunityIcons name='close' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() => handleDelete(data.id)} />
+
                             </View>
                         </View>
                     ))}
-
+                    {openModal && <EditModal setOpenModal={setOpenModal} updateItem={updateItem}/>}
                 </View>
             </ScrollView>
             <BottomNav />
