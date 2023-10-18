@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../Config/Firebase";
 import { Alert } from "react-native";
 
@@ -38,7 +38,6 @@ export const fetchDataSlice = createSlice({
         if (index !== -1) {
           state.myItems[index] = action.payload;
         }
-        console.log("Item updated successfully1");
 
       } catch (error) {
         console.log(error);
@@ -52,19 +51,24 @@ export const fetchDataSlice = createSlice({
 export const fetchData = () => async (dispatch) => {
   dispatch(fetchDataSlice.actions.fetchDataStart());
   try {
-    const querySnapshot = await getDocs(collection(db, "myItems"));
-    const data = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    dispatch(fetchDataSlice.actions.fetchDataSuccess(data));
+    const collectionRef = collection(db, "myItems");
+    onSnapshot(collectionRef, (snapShot) => {
+      let collections = [];
+      snapShot.forEach((doc) => {
+        collections.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      dispatch(fetchDataSlice.actions.fetchDataSuccess(collections));
+    })
+
   } catch (error) {
     dispatch(fetchDataSlice.actions.fetchDataFailure(error.message));
   }
 };
 
 export const deleteItem = (id) => async (dispatch) => {
-  console.log(id);
   try {
     await deleteDoc(doc(db, "myItems", id));
     dispatch(fetchDataSlice.actions.deleteData(id))
@@ -75,8 +79,6 @@ export const deleteItem = (id) => async (dispatch) => {
 }
 
 export const updateAnItem = (updatedItem) => async (dispatch) => {
-  console.log("check updatedItem:",updatedItem);
-
   const item = {
     item: updatedItem.item,
     quantity: updatedItem.quantity
@@ -84,7 +86,8 @@ export const updateAnItem = (updatedItem) => async (dispatch) => {
   try {
     await updateDoc(doc(db, "myItems", updatedItem.docId), item);
     dispatch(fetchDataSlice.actions.updateData(updatedItem));
-    console.log("Item updated successfully2");
+    Alert.alert("Item updated successfully")
+
   } catch (error) {
     console.log(error);
   }

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SafeAreaView } from 'react-native';
@@ -6,15 +6,16 @@ import { deleteData, deleteItem, fetchData, updateData } from '../Redux/FetchDat
 import BottomNav from './BottomNav';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import EditModal from './EditModal';
+import AddForm from './AddForm';
 
 
 export default function DisplayList() {
     const dispatch = useDispatch()
     const [openModal, setOpenModal] = useState(false)
+    const [openAddModal, setOpenAddModal] = useState(false)
+
     const [updateItem, setUpdateItem] = useState("")
     const { loading, error, myItems } = useSelector((state) => state.myItems)
-    console.log("what's inside:", useSelector((state) => state.myItems));
-   
 
     useEffect(() => {
         dispatch(fetchData())
@@ -28,7 +29,7 @@ export default function DisplayList() {
 
     if (loading) {
         return (
-            <View>
+            <View style={styles.container}>
                 <Text> Loading...</Text>
             </View>
         );
@@ -42,8 +43,7 @@ export default function DisplayList() {
         );
     }
 
-    function modal(itemDetails){
-        console.log("see the item DETAILS:", itemDetails);
+    function modal(itemDetails) {
         setUpdateItem(itemDetails)
         setOpenModal(true)
     }
@@ -51,30 +51,35 @@ export default function DisplayList() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.nav}>
-                <MaterialCommunityIcons name='arrow-left-thick' size={35} color={"#2F2F2F"} style={styles.icon} onPress={() => navigation.navigate("AddForm")} />
-                <Text style={{ fontSize: 20, fontWeight: "400" }}>My Grocery List</Text>
-                <MaterialCommunityIcons name='cart-variant' size={35} color={"#2F2F2F"} style={styles.icon} onPress={() => navigation.navigate("AddForm")} />
-            </View>
-            <ScrollView style={styles.scroll}>
-                <View style={styles.containerItems}>
-                    {myItems.map((data) => (
-                        <View key={data.id} style={styles.items}>
-                            <Text style={{ fontSize: 16, fontWeight: "300" }}>{data.item}</Text>
-                            <Text style={{ fontSize: 16, fontWeight: "300" }}>{data.quantity}</Text>
-                            <View style={styles.crud}>
-                                <MaterialCommunityIcons name='pencil' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() => modal( data)} />
-                                <MaterialCommunityIcons name='close' size={25} color={"#2F2F2F"} style={styles.icon} onPress={() => handleDelete(data.id)} />
+        <>
+            <SafeAreaView style={styles.container}>
+                <ImageBackground source={require("../assets/groceries.jpg")} style={styles.banner} >
+                    <View style={styles.backgroundColorCont}>
+                        <MaterialCommunityIcons name='plus-circle' size={45} color={"#5c913b"} onPress={() => setOpenAddModal(true)} style={styles.nav} />
+                    </View>
+                </ImageBackground>
 
+                <ScrollView style={styles.scroll}>
+                    <Text style={{ fontSize: 30, fontWeight: "bold", textAlign: "center", marginBottom: 30, color: "#5c913b" }}>My Grocery List</Text>
+                    <View style={styles.containerItems}>
+                        {myItems.map((data) => (
+                            <View key={data.id} style={styles.items}>
+                                <Text style={{ fontSize: 16, fontWeight: "300", width: "60%" }}>{data.item}</Text>
+                                <Text style={{ fontSize: 16, fontWeight: "300", width: "15%" }}>{data.quantity}</Text>
+                                <View style={styles.crud}>
+                                    <MaterialCommunityIcons name='pencil' size={25} color={"#FFF"} style={styles.icon} onPress={() => modal(data)} />
+                                    <MaterialCommunityIcons name='close' size={25} color={"#FFF"} style={styles.icon} onPress={() => handleDelete(data.id)} />
+                                </View>
                             </View>
-                        </View>
-                    ))}
-                    {openModal && <EditModal setOpenModal={setOpenModal} updateItem={updateItem}/>}
-                </View>
-            </ScrollView>
-            <BottomNav />
-        </SafeAreaView>
+                        ))}
+                    </View>
+
+                </ScrollView>
+
+            </SafeAreaView>
+            {openModal && <View style={styles.addMod}><EditModal setOpenModal={setOpenModal} updateItem={updateItem} /></View>}
+            {openAddModal && <View style={styles.addMod}><AddForm setOpenAddModal={setOpenAddModal} /></View>}
+        </>
     )
 }
 
@@ -87,20 +92,18 @@ const styles = StyleSheet.create({
     },
 
     nav: {
-        width: "100%",
-        marginTop: 20,
-        padding: 20,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between"
+        paddingRight: 20,
+        marginLeft: "auto",
+        marginTop: 50,
+        zIndex: 10
     },
 
     containerItems: {
-        marginTop: "auto",
         width: "100%",
         alignItems: 'center',
-        padding: 20
+        justifyContent: "center",
+        padding: 20,
+        marginTop: "auto"
     },
 
     items: {
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     },
 
     scroll: {
-        marginTop: 30,
+        marginTop: 60,
         width: "100%"
     },
 
@@ -135,7 +138,33 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        // backgroundColor: "blue",
-        width: 80
+        width: "25%"
+    },
+
+    icon: {
+        backgroundColor: "#5c913b",
+        width: 30,
+        height: 30,
+        borderRadius: 100,
+        textAlign: "center"
+    },
+
+    banner: {
+        width: "100%",
+        height: 150
+    },
+
+    backgroundColorCont: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        height: 150
+    },
+
+    addMod: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        width: "100%",
+        height: "100%",
+        zIndex: 20,
+        justifyContent:"center",
+        alignItems:"center"
     }
 })

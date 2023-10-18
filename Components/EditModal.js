@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { TextInput } from 'react-native'
 import { TouchableOpacity } from 'react-native'
@@ -21,7 +21,6 @@ export default function EditModal({ setOpenModal, updateItem }) {
 
 
     useEffect(() => {
-        console.log("check the item information for me:", updateItem.id);
         setItem(updateItem.item)
         setQuantity(updateItem.quantity)
         setDcoId(updateItem.id)
@@ -38,31 +37,50 @@ export default function EditModal({ setOpenModal, updateItem }) {
     }
 
     const handleUpdate = () => {
-        dispatch(updateAnItem({item,quantity,docId}))
-        // console.log(item);
-        // console.log(quantity);
-
+        dispatch(updateAnItem({ item, quantity, docId }))
     }
 
 
     return (
-        <View style={styles.form}>
-            <Text onPress={closeModal}>X</Text>
-            <TextInput placeholder='Enter Item' style={styles.input} onChangeText={handleItemChange} value={item} />
-            <TextInput placeholder='Enter Quantity' style={styles.input} onChangeText={handleQuantityChange} value={quantity} />
-            <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-                <Text style={styles.btn} >Saving changes</Text>
-            </TouchableOpacity>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.form}>
+            <Text style={{ marginLeft: "auto", padding: 10, fontSize: 20, fontWeight: "bold" }} onPress={() => setOpenModal(false)}>X</Text>
+                <Text style={styles.heading}>Edit your items</Text>
+                <TextInput placeholder='Enter Item' style={styles.input} onChangeText={handleItemChange} value={item} />
+                <TextInput placeholder='Enter Quantity' style={styles.input} onChangeText={handleQuantityChange} value={quantity} />
+                <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+                    <Text style={styles.btn} >Saving changes</Text>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        // flex: 1,
+        width: "84%",
+        height: "auto",
+        marginHorizontal: "8%",
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: "center",
+        paddingVertical: 20,
+        borderRadius: 30
+    },
+
+    heading: {
+        marginTop: 10,
+        fontSize: 25,
+        fontWeight: "bold",
+        color: "#2F2F2F"
+    },
+
     form: {
         display: "flex",
         flexDirection: "column",
         rowGap: 30,
-        marginTop: 100,
     },
 
     input: {

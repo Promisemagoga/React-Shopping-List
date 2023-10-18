@@ -9,37 +9,42 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addItem } from '../Redux/addData'
 import { useEffect } from 'react'
 
-export default function AddForm() {
+export default function AddForm({ setOpenAddModal }) {
     const [item, setItem] = useState("")
     const [quantity, setQuantity] = useState("")
     const dispatch = useDispatch()
 
     const handleSubmit = () => {
-        dispatch(addItem({item, quantity}))
+        dispatch(addItem({ item, quantity }))
     }
 
     return (
         <SafeAreaView style={styles.container}>
+            <Text style={{ marginLeft: "auto", padding: 10, fontSize: 20, fontWeight: "bold" }} onPress={() => setOpenAddModal(false)}>X</Text>
             <Text style={styles.heading}>Add items to your list</Text>
             <Image source={require("../assets/flat.webp")} style={styles.icon} />
             <View style={styles.form}>
-                <TextInput placeholder='Enter Item' style={styles.input}  onChangeText={(event) => setItem(event)}/>
-                <TextInput placeholder='Enter Quantity' style={styles.input}   onChangeText={(event) => setQuantity(event)}/>
+                <TextInput placeholder='Enter Item' style={styles.input} onChangeText={(event) => setItem(event)} />
+                <TextInput placeholder='Enter Quantity' style={styles.input} onChangeText={(event) => setQuantity(event)} />
                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                     <Text style={styles.btn}>Add Item</Text>
                 </TouchableOpacity>
             </View>
-            <BottomNav />
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
+        width: "84%",
+        height: "auto",
+        marginHorizontal: "8%",
         backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: "center"
+        justifyContent: "center",
+        paddingVertical: 20,
+        borderRadius: 30
     },
 
 
@@ -54,10 +59,10 @@ const styles = StyleSheet.create({
     },
 
     heading: {
-        marginTop: 50,
+        marginTop: 10,
         fontSize: 25,
         fontWeight: "bold",
-        color: "#2F2F2F"
+        color: "#2F2F2F",
     },
 
     form: {
@@ -65,6 +70,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         rowGap: 30,
         marginTop: 100,
+        marginBottom: 20
     },
 
     icon: {

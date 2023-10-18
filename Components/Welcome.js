@@ -11,10 +11,11 @@ export default function Welcome() {
     return (
         <SafeAreaView style={styles.container}>
             <Image source={require("../assets/firstPage.webp")} style={styles.mainImage} />
-            <Text style={{ color: "#000", fontSize: 20, marginTop: 20, padding: 20 }}>Create shopping list to make your shopping  easier</Text>
+            <Text style={{fontSize: 40,marginTop:20,fontWeight: "bold", color:"#5c913b"}}>Shoping-List</Text>
+            <Text style={{ color: "#000", fontSize: 18, marginTop: 20, width:310,fontWeight: "200",textAlign: "center" }}>Create shopping list to make your shopping  easier!</Text>
             <View>
-                <TouchableOpacity style={styles.getStarted} onPress={() => navigation.navigate("AddForm")}>
-                    <Text style={styles.getStartedText}>GET STARTED</Text>
+                <TouchableOpacity style={styles.getStarted} onPress={() => navigation.navigate("display")}>
+                    <Text style={styles.getStartedText}>PROCCEED</Text>
                     <MaterialCommunityIcons name='arrow-right' size={30} color={"#fff"} style={styles.icon} />
                 </TouchableOpacity>
             </View>
@@ -33,8 +34,8 @@ const styles = StyleSheet.create({
     mainImage: {
         height: 500,
         width: "100%",
-        borderBottomRightRadius: 150,
-        borderBottomLeftRadius: 150
+        // borderBottomRightRadius: 150,
+        // borderBottomLeftRadius: 150
 
     },
 
@@ -42,11 +43,13 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around",
-        marginTop: 50,
+        columnGap: 50,
+        justifyContent: "center",
+        // justifyContent: "space-around",
+        marginTop: 60,
         backgroundColor: '#5c913b',
-        width: 280,
-        height: 70,
+        width: 310,
+        height: 65,
         borderRadius: 20
 
     },
@@ -54,10 +57,13 @@ const styles = StyleSheet.create({
     getStartedText: {
         textAlign: "center",
         color: "#fff",
-        fontSize: 19
+        fontSize: 16,
+        // marginLeft:-20
     },
 
-
+icon:{
+    // marginRight:-30
+},
 
 
 });

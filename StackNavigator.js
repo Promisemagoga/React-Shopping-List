@@ -11,9 +11,8 @@ function StackNavigator() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Group>
                 <Stack.Screen name="Welcome" component={Welcome} />
-                <Stack.Screen name="AddForm" component={AddForm} />
                 <Stack.Screen name="display" component={DisplayList} />
-
+                <Stack.Screen name="AddForm" component={AddForm} />
             </Stack.Group>
         </Stack.Navigator>
     )
